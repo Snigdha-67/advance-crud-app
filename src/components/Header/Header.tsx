@@ -1,5 +1,7 @@
+import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import ThemeToggleButton from "../Buttons/ThemeToggleButton";
+import { buttonVariants } from "../shadcnui/button";
 
 const Header = () => {
   return (
@@ -11,12 +13,17 @@ const Header = () => {
           <h1
             className="text-2xl font-semibold"
             aria-label="App Name">
-            NSF App
+            CRUD App
           </h1>
         </Link>
 
         <nav className="flex items-center gap-4">
-          <Link href={"/"}>Home</Link>
+          <Link
+            href={"/create"}
+            className={buttonVariants({ variant: "secondary" })}>
+            <PlusIcon />
+            Create
+          </Link>
 
           <ThemeToggleButton />
         </nav>

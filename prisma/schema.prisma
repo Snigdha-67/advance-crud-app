@@ -10,3 +10,14 @@ generator client {
 datasource db {
   provider = "sqlite"
 }
+
+model CrudTable {
+  userId      String   @id @default(uuid())
+  userName    String
+  userEmail   String   @unique
+  userPhNo    Int      @unique
+  userImage   String   @unique
+  userGender  String
+  userCountry String
+  userDob     DateTime
+}
