@@ -2,7 +2,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Advance Crud",
-  description: "development base Crud App",
+  description: "Home page of Advance Crud App",
 };
 
 const page = () => {

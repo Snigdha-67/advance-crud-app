@@ -34,13 +34,16 @@ const CreateUserForm = () => {
   return (
     <form
       onSubmit={handleSubmit(createFormHandler)}
-      className="grid place-items-center space-y-4 p-2"
+      className="grid place-items-center space-y-2"
       noValidate>
       <Controller
         name="userName"
         control={control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
+          <FieldLabel>
+            Full Name
+          </FieldLabel>
             <Input
               {...field}
               id={field.name}
@@ -60,13 +63,17 @@ const CreateUserForm = () => {
         control={control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
+             <FieldLabel>
+            Email Address
+          </FieldLabel>
+            
             <Input
               {...field}
               id={field.name}
               type="email"
               className="rounded-xl"
               aria-invalid={fieldState.invalid}
-              placeholder="Email Address"
+              placeholder="xyz@gamil.com"
               autoComplete="on"
             />
 
@@ -95,14 +102,16 @@ const CreateUserForm = () => {
           </Field>
         )}
       />
-
+      
+      
+      <div className=" grid gap-2 grid-cols-2 ">
       <Controller
         name="userGender"
         control={control}
         render={({ field, fieldState }) => (
           <Field
-            orientation="responsive"
-            data-invalid={fieldState.invalid}>
+          orientation="responsive"
+          data-invalid={fieldState.invalid}>
             <FieldContent>
               <FieldLabel>Gender</FieldLabel>
 
@@ -115,7 +124,7 @@ const CreateUserForm = () => {
               <SelectTrigger
                 id="form-rhf-select-language"
                 aria-invalid={fieldState.invalid}
-                className="min-w-30">
+                className="min-w-30 rounded-xl">
                 <SelectValue placeholder="Select Gender" />
               </SelectTrigger>
               <SelectContent>
@@ -126,7 +135,56 @@ const CreateUserForm = () => {
             </Select>
           </Field>
         )}
+        />
+        <Controller
+        name="userPhNo"
+        control={control}
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel>Date of Birth</FieldLabel>
+            <Input
+              {...field}
+              id={field.name}
+              type="number"
+              className="rounded-xl"
+              aria-invalid={fieldState.invalid}
+              placeholder="dd/mm/yy"
+              autoComplete="on"
+            />
+
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />      
+              </div>
+     
+
+
+ 
+       <Controller
+        name="userState"
+        control={control}
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel>State</FieldLabel>
+            <Input
+              {...field}
+              id={field.name}
+              type="number"
+              className="rounded-xl"
+              aria-invalid={fieldState.invalid}
+              placeholder="Which State are you From?"
+              autoComplete="on"
+            />
+
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
       />
+
+
+
+
     </form>
   );
 };
