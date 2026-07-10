@@ -1,9 +1,8 @@
 import CreateUserForm from "@/components/Forms/CreateUserForm";
 import {
   Card,
-  CardContent,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/shadcnui/card";
 import { Separator } from "@/components/shadcnui/separator";
 import { Metadata } from "next";
@@ -23,9 +22,9 @@ const page = () => {
 
         <Separator />
 
-        <CardContent>
+     
           <CreateUserForm />
-        </CardContent>
+       
       </Card>
     </section>
   );

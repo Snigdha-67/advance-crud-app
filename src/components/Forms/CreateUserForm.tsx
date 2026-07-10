@@ -1,9 +1,16 @@
 "use client";
 import { formSchema, FormSchemaType } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { LoaderIcon, UserRoundPen } from "lucide-react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { Button } from "../shadcnui/button";
+import { Calendar } from "../shadcnui/calendar";
+import { CardContent, CardFooter } from "../shadcnui/card";
 import { Field, FieldContent, FieldError, FieldLabel } from "../shadcnui/field";
 import { Input } from "../shadcnui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "../shadcnui/popover";
 import {
   Select,
   SelectContent,
@@ -13,7 +20,7 @@ import {
 } from "../shadcnui/select";
 
 const CreateUserForm = () => {
-  const { handleSubmit, control } = useForm({
+  const { handleSubmit, control,formState:{isSubmitting}, reset} = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       userName: "",
@@ -27,15 +34,24 @@ const CreateUserForm = () => {
     mode: "all",
   });
 
-  const createFormHandler = (cfData: FormSchemaType) => {
+  const [open, setOpen] = useState(false);
+
+  const createFormHandler =async(cfData: FormSchemaType) => {
+
+    await new Promise((r)=> setTimeout(r,1000))
     console.log(cfData);
+
+    reset();
   };
 
   return (
     <form
       onSubmit={handleSubmit(createFormHandler)}
-      className="grid place-items-center space-y-2"
+      className=""
       noValidate>
+        <CardContent className="grid place-items-center gap-2 pb-4">
+          
+     
       <Controller
         name="userName"
         control={control}
@@ -49,8 +65,8 @@ const CreateUserForm = () => {
               id={field.name}
               className="rounded-xl"
               aria-invalid={fieldState.invalid}
-              placeholder="Name"
-              autoComplete="on"
+              placeholder="Enter Your Name"
+              autoComplete="name"
             />
 
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -81,8 +97,7 @@ const CreateUserForm = () => {
           </Field>
         )}
       />
-
-      <Controller
+     <Controller
         name="userPhNo"
         control={control}
         render={({ field, fieldState }) => (
@@ -91,11 +106,16 @@ const CreateUserForm = () => {
             <Input
               {...field}
               id={field.name}
-              type="number"
+              type="tel"
               className="rounded-xl"
               aria-invalid={fieldState.invalid}
               placeholder="+91...."
               autoComplete="on"
+              onChange={(e) => {
+                const rawValue = e.target.value;
+                const filteredValue = rawValue.replace(/[^0-9+]/g, "");
+                field.onChange(filteredValue);
+              }}
             />
 
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -104,7 +124,7 @@ const CreateUserForm = () => {
       />
       
       
-      <div className=" grid gap-2 grid-cols-2 ">
+      <div className=" grid gap-4 grid-cols-2 w-full ">
       <Controller
         name="userGender"
         control={control}
@@ -128,39 +148,57 @@ const CreateUserForm = () => {
                 <SelectValue placeholder="Select Gender" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Male">Male</SelectItem>
-                <SelectItem value="Female">Female</SelectItem>
+                <SelectItem value="Male">Female</SelectItem>
+                <SelectItem value="Female">Male</SelectItem>
                 <SelectItem value="Others">Prefer Not To Say</SelectItem>
               </SelectContent>
             </Select>
           </Field>
         )}
         />
-        <Controller
-        name="userPhNo"
-        control={control}
-        render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel>Date of Birth</FieldLabel>
-            <Input
-              {...field}
-              id={field.name}
-              type="number"
-              className="rounded-xl"
-              aria-invalid={fieldState.invalid}
-              placeholder="dd/mm/yy"
-              autoComplete="on"
-            />
-
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />      
+       <Controller
+          name="userDob"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel>Date of Birth</FieldLabel>
+              <Popover
+                open={open}
+                onOpenChange={setOpen}>
+                <PopoverTrigger
+                  render={
+                    <Button
+                      variant="secondary"
+                      id="date"
+                      className="justify-start rounded-xl">
+                      {field.value ?
+                        format(new Date(field.value), "dd/MM/yyyy")
+                      : "Select Your Birthdate"}
+                    </Button>
+                  }
+                />
+                <PopoverContent
+                  className="w-auto overflow-hidden p-0"
+                  align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    defaultMonth={field.value}
+                    captionLayout="dropdown"
+                    onSelect={(selectedDate) => {
+                      field.onChange(selectedDate);
+                      setOpen(false);
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        /> 
               </div>
      
 
-
- 
        <Controller
         name="userState"
         control={control}
@@ -170,7 +208,6 @@ const CreateUserForm = () => {
             <Input
               {...field}
               id={field.name}
-              type="number"
               className="rounded-xl"
               aria-invalid={fieldState.invalid}
               placeholder="Which State are you From?"
@@ -182,7 +219,21 @@ const CreateUserForm = () => {
         )}
       />
 
+   </CardContent>
 
+   <CardFooter className="pt">
+  <Button type="submit" className={"w-full"} disabled={isSubmitting}>
+      {isSubmitting ?
+  <>
+     <LoaderIcon className="animate-spin"/> Creating
+  </>:
+  <>
+     <UserRoundPen/> Create
+  </>
+}
+ 
+  </Button>
+</CardFooter>
 
 
     </form>
