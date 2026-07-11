@@ -1,8 +1,9 @@
 "use client";
+
 import { formSchema, FormSchemaType } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { LoaderIcon, UserPlus2Icon } from "lucide-react";
+import { LoaderIcon, UserRoundPen } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "../shadcnui/button";
@@ -19,7 +20,7 @@ import {
   SelectValue,
 } from "../shadcnui/select";
 
-const CreateUserForm = () => {
+const UpdateUserFrom = () => {
   const {
     handleSubmit,
     control,
@@ -40,6 +41,7 @@ const CreateUserForm = () => {
   });
 
   const [open, setOpen] = useState(false);
+  // const [preview, setPreview] = useState<string | null>(null);
 
   const createFormHandler = async (cfData: FormSchemaType) => {
     await new Promise((r) => setTimeout(r, 1000));
@@ -168,7 +170,6 @@ const CreateUserForm = () => {
                     <SelectItem value="Others">Prefer Not To Say</SelectItem>
                   </SelectContent>
                 </Select>
-
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -189,10 +190,10 @@ const CreateUserForm = () => {
                       <Button
                         variant="secondary"
                         id="date"
-                        className="text-input justify-start rounded-xl">
+                        className="justify-start rounded-xl">
                         {field.value ?
                           format(new Date(field.value), "dd/MM/yyyy")
-                        : "Select you DOB"}
+                        : "Select your DOB"}
                       </Button>
                     }
                   />
@@ -247,10 +248,10 @@ const CreateUserForm = () => {
           disabled={isSubmitting}>
           {isSubmitting ?
             <>
-              <LoaderIcon className="animate-spin" /> Creating
+              <LoaderIcon className="animate-spin" /> Updating
             </>
           : <>
-              <UserPlus2Icon /> Create
+              <UserRoundPen /> Update
             </>
           }
         </Button>
@@ -259,4 +260,4 @@ const CreateUserForm = () => {
   );
 };
 
-export default CreateUserForm;
+export default UpdateUserFrom;

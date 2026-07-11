@@ -11,9 +11,10 @@ export const formSchema = z.object({
     .endsWith("@gmail.com", { error: "Only Gmail Allowed" }),
   userPhNo: z
     .string()
+    .min(1, { error: "Phnone Number Required" })
     .length(13, { error: "Phone Number must be 10 digits" })
-    .startsWith("+91"),
-  userImage: z.string(),
+    .startsWith("+91", { error: "must start with +91" }),
+  userImage: z.url().endsWith(".jpg", { error: "only jpg format" }),
   userGender: z.string(),
   userState: z
     .string({ error: "Required" })
