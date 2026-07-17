@@ -1,10 +1,13 @@
 "use client";
 import { formSchema, FormSchemaType } from "@/lib/zodSchema";
+import { createUser } from "@/server/createUser";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { LoaderIcon, UserPlus2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { Button } from "../shadcnui/button";
 import { Calendar } from "../shadcnui/calendar";
 import { CardContent, CardFooter } from "../shadcnui/card";
@@ -20,6 +23,8 @@ import {
 } from "../shadcnui/select";
 
 const CreateUserForm = () => {
+  const [open, setOpen] = useState(false);
+  const { push } = useRouter();
   const {
     handleSubmit,
     control,
@@ -39,13 +44,20 @@ const CreateUserForm = () => {
     mode: "all",
   });
 
-  const [open, setOpen] = useState(false);
-
   const createFormHandler = async (cfData: FormSchemaType) => {
     await new Promise((r) => setTimeout(r, 1000));
-    console.log(cfData);
 
-    reset();
+    const { isSuccess, messege } = await createUser(cfData);
+
+    if (isSuccess) {
+      reset();
+
+      toast.success(messege);
+
+      push("/");
+    } else {
+      toast.error(messege);
+    }
   };
 
   return (
@@ -189,7 +201,7 @@ const CreateUserForm = () => {
                       <Button
                         variant="secondary"
                         id="date"
-                        className="text-input justify-start rounded-xl">
+                        className="justify-start rounded-xl">
                         {field.value ?
                           format(new Date(field.value), "dd/MM/yyyy")
                         : "Select you DOB"}
@@ -247,7 +259,8 @@ const CreateUserForm = () => {
           disabled={isSubmitting}>
           {isSubmitting ?
             <>
-              <LoaderIcon className="animate-spin" /> Creating
+              <LoaderIcon className="animate-spin" />
+              Creating
             </>
           : <>
               <UserPlus2Icon /> Create

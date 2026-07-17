@@ -1,11 +1,15 @@
 "use client";
 
 import { formSchema, FormSchemaType } from "@/lib/zodSchema";
+import { editUser } from "@/server/editUser";
+import { CrudTable } from "@generated/prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { LoaderIcon, UserRoundPen } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { Button } from "../shadcnui/button";
 import { Calendar } from "../shadcnui/calendar";
 import { CardContent, CardFooter } from "../shadcnui/card";
@@ -20,22 +24,28 @@ import {
   SelectValue,
 } from "../shadcnui/select";
 
-const UpdateUserFrom = () => {
+type UserFromProps = {
+  editData: CrudTable;
+};
+
+const UpdateUserFrom = ({ editData }: UserFromProps) => {
+  const { push } = useRouter();
+
   const {
     handleSubmit,
     control,
-    formState: { isSubmitting },
     reset,
+    formState: { isSubmitting, isDirty },
   } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      userName: "",
-      userEmail: "",
+      userName: editData.userName,
+      userEmail: editData.userEmail,
       userPhNo: "",
-      userImage: "",
-      userGender: "",
-      userState: "",
-      userDob: undefined,
+      userImage: editData.userImage,
+      userGender: editData.userGender,
+      userState: editData.userState,
+      userDob: editData.userDob,
     },
     mode: "all",
   });
@@ -43,16 +53,24 @@ const UpdateUserFrom = () => {
   const [open, setOpen] = useState(false);
   // const [preview, setPreview] = useState<string | null>(null);
 
-  const createFormHandler = async (cfData: FormSchemaType) => {
+  const updateFormHandler = async (cfData: FormSchemaType) => {
     await new Promise((r) => setTimeout(r, 1000));
-    console.log(cfData);
+    const { isSuccess, messege } = await editUser(editData.userId, cfData);
 
-    reset();
+    if (isSuccess) {
+      reset();
+
+      toast.success(messege);
+
+      push("/");
+    } else {
+      toast.error(messege);
+    }
   };
 
   return (
     <form
-      onSubmit={handleSubmit(createFormHandler)}
+      onSubmit={handleSubmit(updateFormHandler)}
       className=""
       noValidate>
       <CardContent className="grid place-items-center gap-2 pb-4">
@@ -245,7 +263,7 @@ const UpdateUserFrom = () => {
         <Button
           type="submit"
           className={"w-full"}
-          disabled={isSubmitting}>
+          disabled={isSubmitting || !isDirty}>
           {isSubmitting ?
             <>
               <LoaderIcon className="animate-spin" /> Updating
