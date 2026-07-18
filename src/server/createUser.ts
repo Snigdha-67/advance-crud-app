@@ -12,14 +12,14 @@ export const createUser = async (cfData: FormSchemaType) => {
     revalidatePath("/");
     return {
       isSuccess: true,
-      messege: "User Deleted Successfully ✅",
+      messege: "User Creation Successfully ✅",
     };
   } catch (error) {
     console.log(error);
 
     return {
       isSuccess: false,
-      messege: "🚨 User Deletation Failed 🚨",
+      messege: "🚨 User Creation Failed 🚨",
     };
   }
 };

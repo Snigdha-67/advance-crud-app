@@ -1,3 +1,5 @@
+"use server";
+
 import prisma from "@/lib/database/dbClient";
 import { FormSchemaType } from "@/lib/zodSchema";
 import { revalidatePath } from "next/cache";
@@ -13,14 +15,14 @@ export const editUser = async (uId: string, cfdata: FormSchemaType) => {
     revalidatePath("/");
     return {
       isSuccess: true,
-      messege: "User Deleted Successfully ✅",
+      messege: "User Updated Successfully ✅",
     };
   } catch (error) {
     console.log(error);
 
     return {
       isSuccess: false,
-      messege: "🚨 User Deletation Failed 🚨",
+      messege: "🚨 User Updatation Failed 🚨",
     };
   }
 };

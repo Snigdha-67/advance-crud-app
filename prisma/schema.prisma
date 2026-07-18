@@ -15,7 +15,7 @@ model CrudTable {
   userId     String   @id @default(uuid())
   userName   String
   userEmail  String   @unique
-  userPhNo   Int      @unique
+  userPhNo   String      @unique
   userImage  String   @unique
   userGender String
   userState  String
